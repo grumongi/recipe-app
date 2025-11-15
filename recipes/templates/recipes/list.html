@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recipe List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .recipe { border: 1px solid #ddd; margin: 20px 0; padding: 20px; border-radius: 5px; }
+        .recipe-name { color: #333; font-size: 1.5em; margin-bottom: 10px; }
+        .recipe-info { color: #666; margin-bottom: 15px; }
+        .ingredients { background: #f9f9f9; padding: 15px; border-radius: 3px; }
+        .ingredients h4 { margin-top: 0; color: #555; }
+        .ingredient-list { margin: 0; padding-left: 20px; }
+        .no-ingredients { color: #999; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Recipe Collection</h1>
+    
+    {% for recipe in recipes %}
+        <div class="recipe">
+            <div class="recipe-name">{{ recipe.name }}</div>
+            <div class="recipe-info">
+                <strong>Difficulty:</strong> {{ recipe.difficulty }} | 
+                <strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes
+                {% if recipe.category %}
+                    | <strong>Category:</strong> {{ recipe.category }}
+                {% endif %}
+            </div>
+            
+            <div class="ingredients">
+                <h4>Ingredients:</h4>
+                {% if recipe.get_ingredients_list %}
+                    <ul class="ingredient-list">
+                    {% for ingredient in recipe.get_ingredients_list %}
+                        <li>{{ ingredient }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="no-ingredients">No ingredients added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No recipes found. <a href="/admin/recipes/recipe/add/">Add a recipe</a></p>
+    {% endfor %}
+    
+    <p><a href="/admin/">Go to Admin</a> | <a href="/admin/recipes/recipe/add/">Add New Recipe</a></p>
+</body>
+</html>
