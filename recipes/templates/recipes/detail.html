@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ recipe.name }} - Recipe Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .navigation {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .nav-links a {
+            display: inline-block;
+            padding: 8px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a.logout-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .nav-links a.logout-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a.logout-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .nav-links a.logout-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+        }
+        
+        .recipe-detail {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .recipe-header {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+        
+        .recipe-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .recipe-title-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 2rem;
+        }
+        
+        .recipe-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .recipe-meta-header {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .recipe-content {
+            padding: 2rem;
+        }
+        
+        .difficulty-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #667eea;
+        }
+        
+        .difficulty-title {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .difficulty-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .difficulty-badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .difficulty-badge.Easy {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .difficulty-badge.Medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .difficulty-badge.Hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .difficulty-explanation {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .recipe-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-content {
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .ingredient-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .instructions-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .instructions-list li {
+            counter-increment: step-counter;
+            background: #f8f9fa;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            position: relative;
+            padding-left: 4rem;
+        }
+        
+        .instructions-list li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 1rem;
+            top: 1.5rem;
+            background: #667eea;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .recipe-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .info-card-title {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-card-value {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+            <div class="nav-links">
+                <a href="{% url 'recipes:home' %}">← Home</a>
+                <a href="{% url 'recipes:list' %}">All Recipes</a>
+                <a href="{% url 'recipes:search' %}">Search</a>
+                <a href="{% url 'recipes:analytics' %}">Analytics</a>
+            </div>
+        </div>
+        
+        <div class="recipe-detail">
+            <div class="recipe-header">
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}">
+                {% else %}
+                    {% if 'pizza' in recipe.name|lower or 'margherita' in recipe.name|lower %}
+                        <img src="/media/recipes/pizza.png.jpg" alt="{{ recipe.name }}">
+                    {% elif 'steak' in recipe.name|lower or 'beef' in recipe.name|lower %}
+                        <img src="/media/recipes/steak-frite.png.jpg" alt="{{ recipe.name }}">
+                    {% elif 'egg' in recipe.name|lower or 'benedict' in recipe.name|lower %}
+                        <img src="/media/recipes/eggs-benedict.png.jpg" alt="{{ recipe.name }}">
+                    {% elif 'coffee' in recipe.name|lower or 'espresso' in recipe.name|lower or 'cappuccino' in recipe.name|lower or 'latte' in recipe.name|lower %}
+                        <img src="/media/recipes/coffee_image.png.jpg" alt="{{ recipe.name }}">
+                    {% elif 'tea' in recipe.name|lower or 'chai' in recipe.name|lower or 'matcha' in recipe.name|lower %}
+                        <img src="/media/recipes/tea_image.png.jpg" alt="{{ recipe.name }}">
+                    {% else %}
+                        <img src="/media/recipes/welcome-image.png.jpg" alt="{{ recipe.name }}">
+                    {% endif %}
+                {% endif %}
+                <div class="recipe-title-overlay">
+                    <div class="recipe-title">{{ recipe.name }}</div>
+                    <div class="recipe-meta-header">
+                        <span class="meta-item">🕒 {{ recipe.cooking_time }} minutes</span>
+                        <span class="meta-item">🍽️ {{ recipe.servings }} serving{{ recipe.servings|pluralize }}</span>
+                        {% if recipe.category %}
+                            <span class="meta-item">📂 {{ recipe.category }}</span>
+                        {% endif %}
+                        <span class="meta-item">👨‍🍳 {{ recipe.user.username }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recipe-content">
+                <!-- Difficulty Section with Calculation -->
+                <div class="difficulty-section">
+                    <div class="difficulty-title">📊 Recipe Difficulty Analysis</div>
+                    <div class="difficulty-display">
+                        <span class="difficulty-badge {{ calculated_difficulty }}">{{ calculated_difficulty }}</span>
+                        {% if recipe.difficulty and recipe.difficulty != calculated_difficulty %}
+                            <span style="color: #6c757d; font-size: 0.9rem;">
+                                (Originally marked as: {{ recipe.difficulty }})
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="difficulty-explanation">
+                        <strong>Calculation:</strong> This recipe is rated as <strong>{{ calculated_difficulty }}</strong> based on:
+                        <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                            <li><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</li>
+                            <li><strong>Number of Ingredients:</strong> {{ ingredients_list|length }} ingredient{{ ingredients_list|length|pluralize }}</li>
+                        </ul>
+                        {% if calculated_difficulty == 'Easy' %}
+                            <em>Perfect for beginners! Short cooking time with simple ingredients.</em>
+                        {% elif calculated_difficulty == 'Medium' %}
+                            <em>Moderate complexity - good for developing your cooking skills.</em>
+                        {% else %}
+                            <em>Advanced recipe - requires time and experience for best results.</em>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                {% if recipe.description %}
+                    <div class="recipe-section">
+                        <h2 class="section-title">📖 About This Recipe</h2>
+                        <div class="section-content">{{ recipe.description }}</div>
+                    </div>
+                {% endif %}
+                
+                <!-- Ingredients -->
+                <div class="recipe-section">
+                    <h2 class="section-title">🥄 Ingredients</h2>
+                    {% if ingredients_list %}
+                        <div class="ingredients-grid">
+                            {% for ingredient in ingredients_list %}
+                                <div class="ingredient-item">{{ ingredient }}</div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="section-content">
+                            <em>No ingredients have been added to this recipe yet.</em>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Instructions -->
+                {% if recipe.instructions %}
+                    <div class="recipe-section">
+                        <h2 class="section-title">👨‍🍳 Instructions</h2>
+                        <div class="section-content">
+                            {{ recipe.instructions|linebreaks }}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Recipe Info Grid -->
+                <div class="recipe-info-grid">
+                    <div class="info-card">
+                        <div class="info-card-title">Prep & Cook Time</div>
+                        <div class="info-card-value">{{ recipe.cooking_time }} min</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-title">Servings</div>
+                        <div class="info-card-value">{{ recipe.servings }}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-title">Difficulty</div>
+                        <div class="info-card-value">{{ calculated_difficulty }}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-title">Created</div>
+                        <div class="info-card-value">{{ recipe.created_date|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

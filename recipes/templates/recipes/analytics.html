@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Analytics - Recipe Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .nav-links {
+            margin-top: 1rem;
+        }
+        
+        .nav-links a {
+            display: inline-block;
+            padding: 8px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-home {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-search {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .btn-logout {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .btn-admin {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .analytics-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .analytics-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .analytics-card h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-container {
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+        }
+        
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .statistics-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .statistics-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 4rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            color: #7f8c8d;
+        }
+        
+        .empty-state h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .empty-state a {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-state a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .insights-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .insights-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .insight-item {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid #667eea;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .insight-item h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .insight-item p {
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-links a {
+                margin: 5px;
+                display: block;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Recipe Analytics</h1>
+            <p>Insights and statistics about your recipe collection</p>
+            <div class="nav-links">
+                <a href="{% url 'recipes:home' %}" class="btn-home">← Home</a>
+                <a href="{% url 'recipes:list' %}" class="btn-home">All Recipes</a>
+                <a href="{% url 'recipes:search' %}" class="btn-search">Search</a>
+                <a href="{% url 'recipes:logout' %}" class="btn-logout">Logout</a>
+                <a href="/admin/" class="btn-admin">Admin Panel</a>
+            </div>
+        </div>
+
+        {% if total_recipes &gt; 0 %}
+        <!-- Statistics Overview -->
+        <div class="statistics-section">
+            <h2 class="statistics-title">Recipe Collection Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_recipes }}</div>
+                    <div class="stat-label">Total Recipes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ avg_cooking_time|floatformat:0 }}</div>
+                    <div class="stat-label">Avg Cooking Time (min)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ easy_count }}</div>
+                    <div class="stat-label">Easy Recipes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ medium_count }}</div>
+                    <div class="stat-label">Medium Recipes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ hard_count }}</div>
+                    <div class="stat-label">Hard Recipes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ quick_count }}</div>
+                    <div class="stat-label">Quick Recipes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Charts -->
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <h3>📈 Difficulty Distribution</h3>
+                <div class="chart-container">
+                    <img src="data:image/png;base64,{{ difficulty_chart }}" alt="Difficulty Distribution Chart">
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <h3>🕐 Cooking Time Categories</h3>
+                <div class="chart-container">
+                    <img src="data:image/png;base64,{{ time_chart }}" alt="Cooking Time Categories Chart">
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <h3>📅 Recipe Cooking Times</h3>
+                <div class="chart-container">
+                    <img src="data:image/png;base64,{{ recipe_times }}" alt="Recipe Cooking Times Chart">
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section">
+            <h2 class="insights-title">Recipe Collection Insights</h2>
+            
+            <div class="insight-item">
+                <h4>🎯 Most Common Difficulty</h4>
+                <p>
+                    {% if easy_count &gt;= medium_count and easy_count &gt;= hard_count %}
+                        Most of your recipes ({{ easy_count }} out of {{ total_recipes }}) are marked as Easy difficulty. Great for quick cooking!
+                    {% elif medium_count &gt;= hard_count %}
+                        Most of your recipes ({{ medium_count }} out of {{ total_recipes }}) are Medium difficulty. A nice balance of challenge and accessibility.
+                    {% else %}
+                        Most of your recipes ({{ hard_count }} out of {{ total_recipes }}) are Hard difficulty. You enjoy culinary challenges!
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="insight-item">
+                <h4>⏱️ Cooking Time Profile</h4>
+                <p>
+                    {% if avg_cooking_time &lt;= 30 %}
+                        Your recipes average {{ avg_cooking_time|floatformat:0 }} minutes - perfect for quick meals and busy schedules!
+                    {% elif avg_cooking_time &lt;= 60 %}
+                        Your recipes average {{ avg_cooking_time|floatformat:0 }} minutes - a good mix of quick and substantial cooking times.
+                    {% else %}
+                        Your recipes average {{ avg_cooking_time|floatformat:0 }} minutes - you enjoy elaborate cooking sessions and complex dishes!
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="insight-item">
+                <h4>📊 Collection Growth</h4>
+                <p>
+                    Your recipe collection has grown to {{ total_recipes }} recipes. 
+                    {% if quick_count &gt; 0 %}
+                        You have {{ quick_count }} quick recipes (under 30 minutes) for those busy days.
+                    {% endif %}
+                    Keep expanding your culinary repertoire!
+                </p>
+            </div>
+        </div>
+        
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <h2>No Recipes Yet</h2>
+            <p>Start building your recipe collection to see detailed analytics and insights!</p>
+            <a href="/admin/">Add Your First Recipe</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

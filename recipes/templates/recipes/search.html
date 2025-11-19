@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Search - Recipe Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .nav-links {
+            margin-top: 1rem;
+        }
+        
+        .nav-links a {
+            display: inline-block;
+            padding: 8px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-home {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-analytics {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .btn-logout {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .btn-admin {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results-header {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .results-count {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .results-table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .results-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .recipe-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        .recipe-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .difficulty-easy {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .difficulty-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .difficulty-hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+        
+        .no-results h3 {
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .results-table {
+                font-size: 0.9rem;
+            }
+            
+            .nav-links a {
+                margin: 5px;
+                display: block;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Recipe Search</h1>
+            <p>Find your perfect recipes with advanced search filters</p>
+            <div class="nav-links">
+                <a href="{% url 'recipes:home' %}" class="btn-home">← Home</a>
+                <a href="{% url 'recipes:list' %}" class="btn-home">All Recipes</a>
+                <a href="{% url 'recipes:analytics' %}" class="btn-analytics">Analytics</a>
+                <a href="{% url 'recipes:logout' %}" class="btn-logout">Logout</a>
+                <a href="/admin/" class="btn-admin">Admin Panel</a>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="search-form">
+            <h2 class="search-title">Search Criteria</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="recipe_name">Recipe Name</label>
+                        <input type="text" id="recipe_name" name="recipe_name" 
+                               placeholder="e.g., Pizza, Pasta, Chicken" 
+                               value="{{ request.POST.recipe_name|default:'' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ingredients">Ingredients</label>
+                        <input type="text" id="ingredients" name="ingredients" 
+                               placeholder="e.g., tomato, cheese, garlic" 
+                               value="{{ request.POST.ingredients|default:'' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Level</label>
+                        <select id="difficulty" name="difficulty">
+                            <option value="any">Any Difficulty</option>
+                            <option value="easy" {% if request.POST.difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                            <option value="medium" {% if request.POST.difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                            <option value="hard" {% if request.POST.difficulty == 'hard' %}selected{% endif %}>Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cooking_time">Cooking Time</label>
+                        <select id="cooking_time" name="cooking_time">
+                            <option value="any">Any Time</option>
+                            <option value="quick" {% if request.POST.cooking_time == 'quick' %}selected{% endif %}>Quick (&lt;30 min)</option>
+                            <option value="medium" {% if request.POST.cooking_time == 'medium' %}selected{% endif %}>Medium (30-60 min)</option>
+                            <option value="long" {% if request.POST.cooking_time == 'long' %}selected{% endif %}>Long (&gt;60 min)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">🔍 Search Recipes</button>
+                    <a href="{% url 'recipes:search' %}?show_all=true" class="btn btn-secondary">📋 Show All Recipes</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Results -->
+        {% if search_performed %}
+        <div class="results-section">
+            <h2 class="results-header">Search Results</h2>
+            <p class="results-count">Found {{ recipes_count }} recipe{{ recipes_count|pluralize }}</p>
+            
+            {% if not recipes_df.empty %}
+            <div style="overflow-x: auto;">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Recipe Name</th>
+                            <th>Difficulty</th>
+                            <th>Cooking Time</th>
+                            <th>Key Ingredients</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for index, row in recipes_df.iterrows %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'recipes:detail' row.id %}" class="recipe-link">
+                                    {{ row.name }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="difficulty-badge difficulty-{{ row.difficulty|lower }}">
+                                    {{ row.difficulty }}
+                                </span>
+                            </td>
+                            <td>{{ row.cooking_time }} min</td>
+                            <td>{{ row.ingredients }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="no-results">
+                <h3>No recipes found</h3>
+                <p>Try adjusting your search criteria or use "Show All Recipes" to see all available recipes.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

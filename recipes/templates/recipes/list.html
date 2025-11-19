@@ -1,49 +1,308 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Recipe List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App - All Recipes</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .recipe { border: 1px solid #ddd; margin: 20px 0; padding: 20px; border-radius: 5px; }
-        .recipe-name { color: #333; font-size: 1.5em; margin-bottom: 10px; }
-        .recipe-info { color: #666; margin-bottom: 15px; }
-        .ingredients { background: #f9f9f9; padding: 15px; border-radius: 3px; }
-        .ingredients h4 { margin-top: 0; color: #555; }
-        .ingredient-list { margin: 0; padding-left: 20px; }
-        .no-ingredients { color: #999; font-style: italic; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .nav-links {
+            margin-top: 1rem;
+        }
+        
+        .nav-links a {
+            display: inline-block;
+            padding: 8px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-home {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-admin {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-logout {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .recipe-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .recipe-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .recipe-content {
+            padding: 1.5rem;
+        }
+        
+        .recipe-title {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .difficulty {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .difficulty.Easy {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .difficulty.Medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .difficulty.Hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .recipe-description {
+            color: #6c757d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .recipe-ingredients {
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .ingredients-title {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .ingredients-list {
+            color: #6c757d;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .no-recipes {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .no-recipes h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .no-recipes p {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-add-recipe {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-add-recipe:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const recipeCards = document.querySelectorAll('.recipe-card');
+            recipeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    window.location.href = this.getAttribute('data-href');
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-    <h1>Recipe Collection</h1>
-    
-    {% for recipe in recipes %}
-        <div class="recipe">
-            <div class="recipe-name">{{ recipe.name }}</div>
-            <div class="recipe-info">
-                <strong>Difficulty:</strong> {{ recipe.difficulty }} | 
-                <strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes
-                {% if recipe.category %}
-                    | <strong>Category:</strong> {{ recipe.category }}
-                {% endif %}
-            </div>
-            
-            <div class="ingredients">
-                <h4>Ingredients:</h4>
-                {% if recipe.get_ingredients_list %}
-                    <ul class="ingredient-list">
-                    {% for ingredient in recipe.get_ingredients_list %}
-                        <li>{{ ingredient }}</li>
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="no-ingredients">No ingredients added yet.</p>
-                {% endif %}
+    <div class="container">
+        <div class="header">
+            <h1>🍳 All Recipes</h1>
+            <p>Discover delicious recipes from our collection</p>
+            <div class="nav-links">
+                <a href="{% url 'recipes:home' %}" class="btn-home">← Home</a>
+                <a href="{% url 'recipes:search' %}" class="btn-home">Search</a>
+                <a href="{% url 'recipes:analytics' %}" class="btn-home">Analytics</a>
+                <a href="{% url 'recipes:logout' %}" class="btn-logout">Logout</a>
+                <a href="/admin/" class="btn-admin">Admin Panel</a>
             </div>
         </div>
-    {% empty %}
-        <p>No recipes found. <a href="/admin/recipes/recipe/add/">Add a recipe</a></p>
-    {% endfor %}
-    
-    <p><a href="/admin/">Go to Admin</a> | <a href="/admin/recipes/recipe/add/">Add New Recipe</a></p>
+        
+        {% if recipes %}
+            <div class="recipes-grid">
+                {% for recipe in recipes %}
+                    <div class="recipe-card" style="cursor: pointer;" data-href="{% url 'recipes:detail' recipe.pk %}">
+                        <div class="recipe-image">
+                            {% if recipe.image %}
+                                <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                {% if 'pizza' in recipe.name|lower or 'margherita' in recipe.name|lower %}
+                                    <img src="/media/recipes/pizza.png.jpg" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% elif 'steak' in recipe.name|lower or 'beef' in recipe.name|lower %}
+                                    <img src="/media/recipes/steak-frite.png.jpg" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% elif 'egg' in recipe.name|lower or 'benedict' in recipe.name|lower %}
+                                    <img src="/media/recipes/eggs-benedict.png.jpg" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% elif 'coffee' in recipe.name|lower or 'espresso' in recipe.name|lower or 'cappuccino' in recipe.name|lower or 'latte' in recipe.name|lower %}
+                                    <img src="/media/recipes/coffee_image.png.jpg" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% elif 'tea' in recipe.name|lower or 'chai' in recipe.name|lower or 'matcha' in recipe.name|lower %}
+                                    <img src="/media/recipes/tea_image.png.jpg" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <img src="/media/recipes/welcome-image.png.jpg" alt="{{ recipe.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="recipe-content">
+                            <h3 class="recipe-title">{{ recipe.name }}</h3>
+                            <div class="recipe-meta">
+                                <span>🕒 {{ recipe.cooking_time }} min</span>
+                                <span>🍽️ {{ recipe.servings }} serving{{ recipe.servings|pluralize }}</span>
+                                <span class="difficulty {{ recipe.difficulty }}">{{ recipe.difficulty }}</span>
+                            </div>
+                            {% if recipe.description %}
+                                <div class="recipe-description">{{ recipe.description }}</div>
+                            {% endif %}
+                            <div class="recipe-ingredients">
+                                <div class="ingredients-title">🥄 Ingredients:</div>
+                                <div class="ingredients-list">
+                                    {% with ingredients=recipe.get_ingredients_list %}
+                                        {% if ingredients %}
+                                            {% for ingredient in ingredients|slice:":3" %}
+                                                • {{ ingredient }}<br>
+                                            {% endfor %}
+                                            {% with ingredients_count=ingredients|length %}
+                                                {% if ingredients_count != 1 and ingredients_count != 2 and ingredients_count != 3 %}
+                                                    <em>... and {{ ingredients_count|add:"-3" }} more</em>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% else %}
+                                            <em>No ingredients listed</em>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-recipes">
+                <h2>No Recipes Yet!</h2>
+                <p>Start building your recipe collection by adding some delicious recipes.</p>
+                <a href="/admin/recipes/recipe/add/" class="btn-add-recipe">Add Your First Recipe</a>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>

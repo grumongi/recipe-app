@@ -7,86 +7,170 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-image: url('/media/recipes/welcome-image.png.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             margin: 0;
             padding: 0;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
+        
+        /* Dark overlay for better text readability */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
         .container {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 3rem;
             max-width: 800px;
             width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
+        
         .welcome-header {
             color: #2c3e50;
             font-size: 3rem;
             margin-bottom: 1rem;
             font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
+        
         .welcome-subtitle {
-            color: #7f8c8d;
+            color: #5a6c7d;
             font-size: 1.3rem;
             margin-bottom: 2rem;
             line-height: 1.6;
+            font-weight: 500;
         }
+        
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             margin: 2rem 0;
         }
+        
         .feature-card {
-            background: #f8f9fa;
+            background: rgba(248, 249, 250, 0.9);
             padding: 2rem;
             border-radius: 15px;
             border-left: 5px solid #667eea;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
         .feature-title {
             color: #2c3e50;
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
+        
         .feature-description {
-            color: #6c757d;
+            color: #5a6c7d;
             font-size: 1rem;
             line-height: 1.5;
         }
+        
         .cta-buttons {
             margin-top: 2rem;
         }
+        
         .btn {
             display: inline-block;
-            padding: 12px 30px;
-            margin: 0 10px;
+            padding: 15px 35px;
+            margin: 0 10px 10px 0;
             text-decoration: none;
             border-radius: 25px;
             font-weight: bold;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+        
         .btn-primary {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
+            box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
         }
+        
         .btn-secondary {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             color: #667eea;
             border: 2px solid #667eea;
+            backdrop-filter: blur(5px);
         }
+        
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
         }
+        
+        .btn-primary:hover {
+            box-shadow: 0 15px 25px rgba(102, 126, 234, 0.6);
+        }
+        
         .emoji {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .footer-text {
+            margin-top: 2rem; 
+            padding-top: 2rem; 
+            border-top: 1px solid rgba(238, 238, 238, 0.5);
+            color: #7a8a99; 
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .welcome-header {
+                font-size: 2.2rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
@@ -126,12 +210,15 @@
         </div>
         
         <div class="cta-buttons">
-            <a href="/recipes/" class="btn btn-primary">Browse Recipes</a>
+            <a href="{% url 'recipes:list' %}" class="btn btn-primary">Browse Recipes</a>
+            <a href="{% url 'recipes:search' %}" class="btn btn-primary">Search Recipes</a>
+            <a href="{% url 'recipes:analytics' %}" class="btn btn-primary">Analytics</a>
+            <a href="{% url 'recipes:login' %}" class="btn btn-secondary">Login</a>
             <a href="/admin/" class="btn btn-secondary">Admin Panel</a>
         </div>
         
-        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
-            <p style="color: #95a5a6; font-size: 0.9rem;">
+        <div class="footer-text">
+            <p>
                 Built with Django | Recipe Management System
             </p>
         </div>

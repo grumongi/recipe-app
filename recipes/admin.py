@@ -14,14 +14,28 @@ class RecipeIngredientInline(admin.TabularInline):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name',)
+    fields = ('name', 'description', 'image')
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'difficulty', 'cooking_time', 'user', 'created_date', 'get_ingredients_display')
+    list_display = ('name', 'category', 'difficulty', 'cooking_time', 'servings', 'user', 'created_date', 'get_ingredients_display')
     list_filter = ('difficulty', 'category', 'created_date')
-    search_fields = ('name',)
-    readonly_fields = ('created_date', 'updated_date')
+    search_fields = ('name', 'description')
+    readonly_fields = ('created_date', 'updated_date', 'difficulty')
     inlines = [RecipeIngredientInline]
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'description', 'category', 'image')
+        }),
+        ('Recipe Details', {
+            'fields': ('instructions', 'cooking_time', 'servings', 'difficulty')
+        }),
+        ('Meta Information', {
+            'fields': ('user', 'created_date', 'updated_date'),
+            'classes': ('collapse',)
+        }),
+    )
     
     def get_ingredients_display(self, obj):
         """Display ingredients in the list view"""
